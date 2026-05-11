@@ -1,7 +1,8 @@
-// API POZIVI ZA LOGIN
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
 
+// API POZIV ZA LOGIN
 export async function loginUser(email, password) {
-  const response = await fetch('http://localhost:8080/api/auth/login', {
+  const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -16,25 +17,20 @@ export async function loginUser(email, password) {
   return response.json()
 }
 
-
-
+// API POZIV ZA REGISTRACIJU
 export const registerUser = async (userData) => {
-    // Pretpostavljam da koristiš fetch i proxy u vite.config.js, 
-    // pa je URL samo '/api/auth/register'. Ako koristiš neki bazni URL, prilagodi ga.
-    const response = await fetch('http://localhost:8080/api/auth/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-    });
+  const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  })
 
-    if (!response.ok) {
-        //  backend baca badRequest() s tekstualnom porukom
-        const errorMessage = await response.text();
-        throw new Error(errorMessage || 'Greška prilikom registracije');
-    }
+  if (!response.ok) {
+    const errorMessage = await response.text()
+    throw new Error(errorMessage || 'Greška prilikom registracije')
+  }
 
-    // Vraća "Registered." kao običan tekst
-    return response.text();
-};
+  return response.text()
+}
