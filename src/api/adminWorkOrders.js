@@ -4,10 +4,28 @@ import { authFetch } from "./http"
  * API: admin work orders
  * SVRHA:
  * - svi admin pozivi prema work orders endpointima
+ * - koristi lokalni backend u razvoju
+ * - koristi cloud backend ako je postavljen VITE_API_BASE_URL
  */
 
+// PROGRAMSKI ENTITET: konstanta
+// SVRHA:
+// - dohvaća backend URL iz .env datoteke
+// - ako .env ne postoji, koristi lokalni backend na localhost:8080
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080"
+
+// PROGRAMSKI ENTITET: konstanta
+// SVRHA:
+// - osnovna putanja za administratorske radne naloge
+const ADMIN_WORK_ORDERS_URL = `${API_BASE_URL}/api/admin/work-orders`
+
+/**
+ * PROGRAMSKI ENTITET: async funkcija
+ * SVRHA:
+ * - dohvaća sve radne naloge za administratora
+ */
 export async function fetchAllWorkOrders() {
-  const res = await authFetch("http://localhost:8080/api/admin/work-orders")
+  const res = await authFetch(ADMIN_WORK_ORDERS_URL)
 
   if (!res.ok) {
     throw new Error("Dohvat svih naloga nije uspio.")
@@ -17,44 +35,39 @@ export async function fetchAllWorkOrders() {
 }
 
 /**
- * prvi schedule work order
- 
-export async function scheduleWorkOrder(id) {
-  const res = await authFetch(
-    `http://localhost:8080/api/admin/work-orders/${id}/schedule`,
-    { method: "PATCH" }
-  )
+ * PROGRAMSKI ENTITET: async funkcija
+ * SVRHA:
+ * - administrator planira datum odvoza za određeni radni nalog
+ *
+ * PARAMETRI:
+ * - id: ID radnog naloga
+ * - dateStr: datum planiranog odvoza
+ */
+export async function scheduleWorkOrder(id, dateStr) {
+  const params = new URLSearchParams()
+  params.append("date", dateStr)
+
+  const res = await authFetch(`${ADMIN_WORK_ORDERS_URL}/${id}/schedule?${params.toString()}`, {
+    method: "PATCH",
+  })
 
   if (!res.ok) {
-    throw new Error("Planiranje odvoza nije uspjelo.")
+    const err = await res.json().catch(() => null)
+    throw new Error(err?.message || "Greška kod planiranja")
   }
 
   return res.json()
 }
-**************************************************/
-
-// Novi parametar dateStr i dodan u URL
-export async function scheduleWorkOrder(id, dateStr) {
-  // Dodali smo puni URL s http://localhost:8080 kako se ne bi izgubio!
-  const res = await authFetch(`http://localhost:8080/api/admin/work-orders/${id}/schedule?date=${dateStr}`, {
-    method: 'PATCH',
-  });
-  
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message || 'Greška kod planiranja');
-  }
-  return res.json();
-}
 
 /**
- * ADMIN akcija: complete work order
+ * PROGRAMSKI ENTITET: async funkcija
+ * SVRHA:
+ * - administrator označava radni nalog kao završen
  */
 export async function completeWorkOrder(id) {
-  const res = await authFetch(
-    `http://localhost:8080/api/admin/work-orders/${id}/complete`,
-    { method: "PATCH" }
-  )
+  const res = await authFetch(`${ADMIN_WORK_ORDERS_URL}/${id}/complete`, {
+    method: "PATCH",
+  })
 
   if (!res.ok) {
     throw new Error("Označavanje kao COMPLETED nije uspjelo.")
@@ -64,7 +77,9 @@ export async function completeWorkOrder(id) {
 }
 
 /**
- * ADMIN filtriranje radnih naloga
+ * PROGRAMSKI ENTITET: async funkcija
+ * SVRHA:
+ * - filtrira radne naloge prema zadanim kriterijima
  *
  * PARAMETRI:
  * - status
@@ -93,7 +108,7 @@ export async function filterWorkOrders(filters) {
     params.append("userEmail", filters.userEmail)
   }
 
-  const url = `http://localhost:8080/api/admin/work-orders/filter?${params.toString()}`
+  const url = `${ADMIN_WORK_ORDERS_URL}/filter?${params.toString()}`
 
   const res = await authFetch(url)
 

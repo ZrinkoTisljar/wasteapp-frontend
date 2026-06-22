@@ -7,7 +7,11 @@ import { authFetch } from "./http"
  */
 
 export async function createManifestForWorkOrder(workOrderId, note = "") {
-  const res = await authFetch("http://localhost:8080/api/admin/manifests", {
+  /*const res = await authFetch("http://localhost:8080/api/admin/manifests", {*/
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+
+const res = await authFetch(`${API_BASE_URL}/api/admin/manifests`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -27,9 +31,19 @@ export async function createManifestForWorkOrder(workOrderId, note = "") {
 
   export async function fetchAllManifests() {
 
-  const res = await authFetch(
+  /*const res = await authFetch(
     "http://localhost:8080/api/admin/manifests"
-  )
+  )*/
+ const res = await authFetch(
+  `${API_BASE_URL}/api/admin/manifests`
+)
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+
+  const res = await authFetch(`${API_BASE_URL}/api/admin/manifests`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  })
 
   if (!res.ok) {
     throw new Error("Dohvat manifesta nije uspio.")
