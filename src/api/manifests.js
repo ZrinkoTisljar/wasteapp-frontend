@@ -46,23 +46,20 @@ export async function downloadManifestPdf(id) {
   const response = await authFetch(`${MANIFESTS_URL}/${id}/pdf`)
 
   if (!response.ok) {
-    throw new Error("Preuzimanje PDF-a nije uspjelo.")
+    throw new Error("Otvaranje PDF-a nije uspjelo.")
   }
 
-  // 2. Pretvara odgovor u binarne podatke (Blob)
+  // 2. Pretvara odgovor u Blob objekt koji predstavlja binarne podatke PDF datoteke
   const blob = await response.blob()
 
-  // 3. Stvara privremeni link i pokreće preuzimanje PDF datoteke
+  // Stvara privremeni URL koji preglednik može otvoriti
   const url = window.URL.createObjectURL(blob)
-  const a = document.createElement("a")
 
-  a.href = url
-  a.download = `Prateci_list_${id}.pdf`
+  // Otvara PDF u novoj kartici
+  window.open(url, "_blank", "noopener,noreferrer")
 
-  document.body.appendChild(a)
-  a.click()
-
-  // 4. Čisti privremeni link i oslobađa memoriju
-  a.remove()
-  window.URL.revokeObjectURL(url)
+  // Nakon jedne minute oslobađa privremeni URL iz memorije
+  setTimeout(() => {
+    window.URL.revokeObjectURL(url)
+  }, 60000)
 }
