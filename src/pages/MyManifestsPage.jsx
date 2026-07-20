@@ -29,7 +29,7 @@ function MyManifestsPage() {
 
       } catch (err) {
 
-        setError("Ne mogu učitati manifeste.")
+        setError("Ne mogu učitati prateće listove.")
 
       } finally {
 
@@ -49,7 +49,7 @@ function MyManifestsPage() {
 
       <div className="card wide-card">
 
-        <h1>Moji manifesti</h1>
+        <h1>Moji prateći listovi</h1>
 
         <button onClick={() => navigate("/user")}>
           Natrag
@@ -60,7 +60,7 @@ function MyManifestsPage() {
         {error && <div className="error">{error}</div>}
 
         {!loading && manifests.length === 0 && (
-          <p>Nemaš još generiranih manifesta.</p>
+          <p>Nemaš još generiranih pratećih listova.</p>
         )}
 
         {!loading && manifests.length > 0 && (

@@ -113,8 +113,8 @@ function CreateWorkOrderPage() {
           <label>Količina</label>
           <input
             type="number"
-            step="0.001"
-            min="0.001"
+            step="0.1"
+            min="0.1"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
             required
