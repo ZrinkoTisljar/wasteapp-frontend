@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { clearAuth, getAuth } from '../utils/auth'
 
-// UVOZIMO FUNKCIJU ZA DOHVAT NALOGA (ovu već imaš!)
+//  FUNKCIJA ZA DOHVAT NALOGA
 import { filterWorkOrders } from '../api/adminWorkOrders'
 
 // API za korisnike koji čekaju odobrenje 

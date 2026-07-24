@@ -84,12 +84,7 @@ function AdminManifestsPage() {
                   <td>{m.workOrderId}</td>
                   <td>{m.userEmail}</td>
                   <td>{m.wasteTypeName}</td>
-                  <td>
-  {Number(m.quantity).toLocaleString("hr-HR", {
-    maximumFractionDigits: 3,
-  })}{" "}
-  {m.unit}
-</td>
+                  <td>{m.quantity} {m.unit}</td>
 
                   <td>
 
